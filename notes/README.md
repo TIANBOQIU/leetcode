@@ -1,6 +1,6 @@
 ## LeetCode is Simple
 
-
+$$part1$$
 
 ### [42] Trapping Rain Water
 
