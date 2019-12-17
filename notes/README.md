@@ -277,4 +277,56 @@ class Solution {
 }
 ```
 
-#### 
+#### [301] Remove Invalid Parentheses
+
+https://leetcode.com/problems/remove-invalid-parentheses/
+
+> first count how many open and close parentheses we need to remove, actually its already the minimum number we need to remove to make the string valid
+
+> then dfs
+
+```java
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        int open = 0, close = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') open++;
+            if (ch == ')') {
+                if (open > 0) open--;
+                else close++;
+            }
+        }
+        List<String> res = new ArrayList<>();
+        dfs(s, 0, open, close, res);
+        return res;                
+    }
+    
+    private void dfs(String s, int start, int open, int close, List<String> res) {
+        if (open < 0 || close < 0) return;
+        if (open == 0 && close == 0 && check(s)) {
+            res.add(s); return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (i > start && s.charAt(i) == s.charAt(i - 1)) continue; // remove dups
+            if (ch == '(' || ch == ')') {
+                String next = s.substring(0, i) + s.substring(i + 1);
+                if (ch == '(' && open > 0) 
+                    dfs(next, i, open - 1, close, res); // start from i
+                if (ch == ')' && close > 0) 
+                    dfs(next, i, open, close - 1, res);
+            }
+        }
+    }
+    
+    private boolean check(String s) {
+        int cnt = 0;
+        for (char ch : s.toCharArray()) {
+            if (ch == '(') cnt++;
+            if (ch == ')') cnt--;
+            if (cnt < 0) return false;
+        }
+        return cnt == 0;
+    }
+}
+```
