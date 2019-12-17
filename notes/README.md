@@ -1,10 +1,10 @@
 ## LeetCode is Simple
 
-$$part1$$
+<center><h3 style="font-family:serif; ">Part 1</h3></center>
 
 ### [42] Trapping Rain Water
 
-> https://leetcode.com/problems/trapping-rain-water/
+https://leetcode.com/problems/trapping-rain-water/
 
 ```java
 
