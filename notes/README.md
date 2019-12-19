@@ -330,3 +330,206 @@ class Solution {
     }
 }
 ```
+
+
+#### [297] Serialize and Deserialize Binary Tree
+
+
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serialize(root, sb);
+        return sb.toString();
+    }
+    
+    private void serialize(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("X").append(",");
+            return;
+        }
+        sb.append(root.val).append(",");
+        serialize(root.left, sb);
+        serialize(root.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        Queue<String> queue = new LinkedList<>();
+        queue.addAll(Arrays.asList(data.split(",")));
+        return deserialize(queue);
+    }
+    
+    private TreeNode deserialize(Queue<String> queue) {
+        String cur = queue.poll();
+        if (cur.equals("X")) return null;
+        TreeNode root = new TreeNode(Integer.valueOf(cur));
+        root.left = deserialize(queue);
+        root.right = deserialize(queue);
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.deserialize(codec.serialize(root));
+```
+
+
+#### [269] Alien Dictionary
+
+
+**topological order**
+> DFS with return value (contains cycle or not) and postorder traversal to get the topological order
+
+> or BFS, use Kahn' s algorithm
+
+```java
+class Solution {
+    public String alienOrder(String[] words) {
+        boolean[][] adj = new boolean[26][26];
+        int[] visited = new int[26];
+        Arrays.fill(visited, -1); // -1 unvisited, 0 not visited, 1 visiting, 2 visited
+        for (int i = 0; i < words.length; i++) {
+            for (char ch : words[i].toCharArray()) visited[ch - 'a'] = 0;
+            if (i > 0) {
+                String w1 = words[i - 1], w2 = words[i];
+                for (int j = 0; j < Math.min(w1.length(), w2.length()); j++) {
+                    char ch1 = w1.charAt(j), ch2 = w2.charAt(j);
+                    if (ch1 != ch2) {
+                        adj[ch1 - 'a'][ch2 - 'a'] = true;
+                        break;
+                    }
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 26; i++) {
+            if (visited[i] == 0) {
+                if (dfs(adj, visited, i, sb)) return "";
+            }
+        }
+        return sb.reverse().toString();
+        
+    }
+    
+    private boolean dfs(boolean[][] adj, int[] visited, int i, StringBuilder sb) {
+        visited[i] = 1;
+        for (int j = 0; j < 26; j++) { // edge ['a' + i] -> ['a' + j]
+            if (!adj[i][j]) continue;
+            if (visited[j] == 1) return true; // contains cycle
+            if (visited[j] == 0 && dfs(adj, visited, j, sb)) return true;
+        }
+        visited[i] = 2;
+        sb.append((char)('a' + i));
+        return false; // no cycle
+    }
+}
+```
+
+
+```java
+// BFS, kahn
+class Solution {
+    public String alienOrder(String[] words) {
+        Map<Character, Set<Character>> G = new HashMap<>();
+        Map<Character, Integer> degree = new HashMap<>();
+        for (String w : words) {
+            for (char ch : w.toCharArray()) { // populate node
+                if (!G.containsKey(ch)) G.put(ch, new HashSet<>());
+                if (!degree.containsKey(ch)) degree.put(ch, 0);
+            }
+        }
+        for (int i = 1; i < words.length; i++) { // populate edges
+            String w1 = words[i - 1], w2 = words[i];
+            for (int j = 0; j < Math.min(w1.length(), w2.length()); j++) {
+                char ch1 = w1.charAt(j), ch2 = w2.charAt(j);
+                if (ch1 != ch2) {
+                    if (!G.get(ch1).contains(ch2)) { // dup edges
+                        G.get(ch1).add(ch2);
+                        degree.put(ch2, degree.getOrDefault(ch2, 0) + 1);
+                    }                    
+                    break;
+                }
+            }
+        }
+        StringBuilder res = new StringBuilder(); // topo, kahn
+        Queue<Character> queue = new LinkedList<>();
+        for (char ch : degree.keySet())
+            if (degree.get(ch) == 0) queue.offer(ch);
+        while (!queue.isEmpty()) {
+            char ch = queue.poll();
+            res.append(ch);
+            for (char c : G.get(ch)) {
+                degree.put(c, degree.get(c) - 1);
+                if (degree.get(c) == 0) queue.offer(c);
+            }
+        }
+        System.out.println(res.toString());
+        return res.length() == degree.size() ? res.toString() : "";
+    }
+}
+```
+
+
+> another implementation of bfs using adj, there is an edge case 
+
+```
+[za, zb, ca, cb]
+
+edge a->b appears twice, the degree of b becomes 2
+```
+
+```java
+class Solution {
+    public String alienOrder(String[] words) {
+        boolean[][] adj = new boolean[26][26];
+        int[] degree = new int[26];
+        Arrays.fill(degree, -1);
+        for (int i = 0; i < words.length; i++) {
+            for (char ch : words[i].toCharArray()) {
+                if (degree[ch - 'a'] == -1) degree[ch - 'a'] = 0;
+            }
+            if (i > 0) {
+                String w1 = words[i - 1], w2 = words[i];
+                for (int j = 0; j < Math.min(w1.length(), w2.length()); j++) {
+                    char ch1 = w1.charAt(j), ch2 = w2.charAt(j);
+                    if (ch1 != ch2) {
+                        if (!adj[ch1 - 'a'][ch2 - 'a']) degree[ch2 - 'a']++; // avoid duplicate edges
+                        adj[ch1 - 'a'][ch2 - 'a'] = true;
+                        //degree[ch2 - 'a']++;                    
+                        break;
+                    }
+                }
+            }            
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
+        int cnt = 0;
+        for (int i = 0; i < 26; i++) {
+            if (degree[i] != -1) cnt++;
+            if (degree[i] == 0) queue.offer(i); 
+        }            
+        while (!queue.isEmpty()) {
+            int i = queue.poll();
+            sb.append((char)('a' + i));
+            for (int j = 0; j < 26; j++) {
+                if (adj[i][j] && --degree[j] == 0) queue.offer(j);
+            }
+        }
+        return sb.length() == cnt ? sb.toString() : "";
+    }
+}
+```
