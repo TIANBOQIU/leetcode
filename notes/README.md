@@ -28,7 +28,6 @@ class Solution {
 }
 ```
 
-
 #### Median of Two Sorted Arrays
 
 https://leetcode.com/problems/median-of-two-sorted-arrays/
@@ -48,7 +47,7 @@ class Solution {
             if (left1 <= right2 && left2 <= right1) {
                 if ((nums1.length + nums2.length) % 2 == 1) {
                     return Math.max(left1, left2);
-                } else {                    
+                } else {
                     return ((double) (Math.max(left1, left2)) + (double) (Math.min(right1, right2))) / 2;
                 }
             } else if (left1 > right2) {
@@ -89,7 +88,7 @@ class Solution {
         }
         return bridges;
     }
-    
+
     private void dfs(Set<Integer>[] G, int i, int parent) {
         ids[i] = low[i] = ++cnt;
         for (int to : G[i]) {
@@ -98,16 +97,16 @@ class Solution {
             else {
                 dfs(G, to, i);
                 if (low[to] > ids[i]) bridges.add(Arrays.asList(i, to));
-                low[i] = Math.min(low[i], low[to]);                
+                low[i] = Math.min(low[i], low[to]);
             }
         }
     }
-    
+
 }
 ```
 
 ```
-nodes in cycle will have the same low val 
+nodes in cycle will have the same low val
 > System.out.println(Arrays.toString(ids));
 > System.out.println(Arrays.toString(low));
 for the graph in the description
@@ -119,7 +118,6 @@ std output:
 #### Merge k Sorted Lists
 
 https://leetcode.com/problems/merge-k-sorted-lists/
-
 
 ```java
 // priority queue solution, O(k) in space, O(Nlogk) in time
@@ -135,7 +133,7 @@ https://leetcode.com/problems/merge-k-sorted-lists/
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         PriorityQueue<ListNode> pq = new PriorityQueue<>((l1, l2) -> (l1.val - l2.val));
-        for (ListNode l : lists) 
+        for (ListNode l : lists)
             if (l != null) pq.offer(l); // check null
         ListNode head = new ListNode(-1), p = head;
         while (!pq.isEmpty()) {
@@ -147,7 +145,6 @@ class Solution {
     }
 }
 ```
-
 
 ```java
 // merge sort, O(1) in space, O(Nlogk) in time
@@ -163,14 +160,14 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         return helper(lists, 0, lists.length - 1);
     }
-    
+
     private ListNode helper(ListNode[] lists, int start, int end) {
         if (start > end) return null;
         if (start == end) return lists[start];
         int mid = (start + end) / 2;
         return merge(helper(lists, start, mid), helper(lists, mid + 1, end));
     }
-    
+
     private ListNode merge(ListNode l1, ListNode l2) {
         if (l1 == null || l2 == null) return l1 != null ? l1 : l2;
         if (l1.val < l2.val) {
@@ -213,11 +210,9 @@ public:
 };
 ```
 
-
 #### [76] Minimum Window Substring
 
 https://leetcode.com/problems/minimum-window-substring/
-
 
 > move j until find all, then shrink i and update min until the condition is not met
 
@@ -234,7 +229,7 @@ class Solution {
                 if (j - i + 1 < min) {
                     min = j - i + 1;
                     minIndex = i;
-                }                
+                }
                 if (++count[s.charAt(i++)] > 0) --cnt;
                 //i++;
             }
@@ -247,7 +242,6 @@ class Solution {
 #### [273] Integer to English Words
 
 https://leetcode.com/problems/integer-to-english-words/
-
 
 ```java
 class Solution {
@@ -267,7 +261,7 @@ class Solution {
         }
         return res.trim();
     }
-    
+
     private String helper(int n) {
         if (n == 0) return "";
         if (n < 20) return less_than_20[n] + " ";
@@ -298,9 +292,9 @@ class Solution {
         }
         List<String> res = new ArrayList<>();
         dfs(s, 0, open, close, res);
-        return res;                
+        return res;
     }
-    
+
     private void dfs(String s, int start, int open, int close, List<String> res) {
         if (open < 0 || close < 0) return;
         if (open == 0 && close == 0 && check(s)) {
@@ -311,14 +305,14 @@ class Solution {
             if (i > start && s.charAt(i) == s.charAt(i - 1)) continue; // remove dups
             if (ch == '(' || ch == ')') {
                 String next = s.substring(0, i) + s.substring(i + 1);
-                if (ch == '(' && open > 0) 
+                if (ch == '(' && open > 0)
                     dfs(next, i, open - 1, close, res); // start from i
-                if (ch == ')' && close > 0) 
+                if (ch == ')' && close > 0)
                     dfs(next, i, open, close - 1, res);
             }
         }
     }
-    
+
     private boolean check(String s) {
         int cnt = 0;
         for (char ch : s.toCharArray()) {
@@ -331,10 +325,7 @@ class Solution {
 }
 ```
 
-
 #### [297] Serialize and Deserialize Binary Tree
-
-
 
 ```java
 /**
@@ -354,7 +345,7 @@ public class Codec {
         serialize(root, sb);
         return sb.toString();
     }
-    
+
     private void serialize(TreeNode root, StringBuilder sb) {
         if (root == null) {
             sb.append("X").append(",");
@@ -371,7 +362,7 @@ public class Codec {
         queue.addAll(Arrays.asList(data.split(",")));
         return deserialize(queue);
     }
-    
+
     private TreeNode deserialize(Queue<String> queue) {
         String cur = queue.poll();
         if (cur.equals("X")) return null;
@@ -387,11 +378,12 @@ public class Codec {
 // codec.deserialize(codec.serialize(root));
 ```
 
-
 #### [269] Alien Dictionary
 
+https://leetcode.com/problems/alien-dictionary
 
 **topological order**
+
 > DFS with return value (contains cycle or not) and postorder traversal to get the topological order
 
 > or BFS, use Kahn' s algorithm
@@ -422,9 +414,9 @@ class Solution {
             }
         }
         return sb.reverse().toString();
-        
+
     }
-    
+
     private boolean dfs(boolean[][] adj, int[] visited, int i, StringBuilder sb) {
         visited[i] = 1;
         for (int j = 0; j < 26; j++) { // edge ['a' + i] -> ['a' + j]
@@ -438,7 +430,6 @@ class Solution {
     }
 }
 ```
-
 
 ```java
 // BFS, kahn
@@ -460,7 +451,7 @@ class Solution {
                     if (!G.get(ch1).contains(ch2)) { // dup edges
                         G.get(ch1).add(ch2);
                         degree.put(ch2, degree.getOrDefault(ch2, 0) + 1);
-                    }                    
+                    }
                     break;
                 }
             }
@@ -483,8 +474,7 @@ class Solution {
 }
 ```
 
-
-> another implementation of bfs using adj, there is an edge case 
+> another implementation of bfs using adj, there is an edge case
 
 ```
 [za, zb, ca, cb]
@@ -509,19 +499,19 @@ class Solution {
                     if (ch1 != ch2) {
                         if (!adj[ch1 - 'a'][ch2 - 'a']) degree[ch2 - 'a']++; // avoid duplicate edges
                         adj[ch1 - 'a'][ch2 - 'a'] = true;
-                        //degree[ch2 - 'a']++;                    
+                        //degree[ch2 - 'a']++;
                         break;
                     }
                 }
-            }            
+            }
         }
         Queue<Integer> queue = new LinkedList<>();
         StringBuilder sb = new StringBuilder();
         int cnt = 0;
         for (int i = 0; i < 26; i++) {
             if (degree[i] != -1) cnt++;
-            if (degree[i] == 0) queue.offer(i); 
-        }            
+            if (degree[i] == 0) queue.offer(i);
+        }
         while (!queue.isEmpty()) {
             int i = queue.poll();
             sb.append((char)('a' + i));
@@ -530,6 +520,601 @@ class Solution {
             }
         }
         return sb.length() == cnt ? sb.toString() : "";
+    }
+}
+```
+
+#### [68] Text Justification
+
+https://leetcode.com/problems/text-justification/
+
+```java
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> res = new ArrayList<>();
+        int i = 0, len = 0, n = words.length;
+        for (int j = 0; j <= n; j++) {
+            if (j == n || len + words[j].length() + j - i > maxWidth) { // format [i, j)
+                int slots = j - 1 - i, space = maxWidth - len;
+                StringBuilder sb = new StringBuilder();
+                if (j == n || slots == 0) { // left align
+                    for (int k = i; k < j; k++) {
+                        sb.append(words[k]);
+                        if (k != j - 1) sb.append(" ");
+                    }
+                    int last = maxWidth - sb.length();
+                    while (last -- > 0) sb.append(" ");
+                } else {
+                    int extra = space % slots;
+                    for (int k = i; k < j; k++) {
+                        sb.append(words[k]);
+                        if (k != j - 1) {
+                            int between = space / slots;
+                            while (between-- > 0) sb.append(" ");
+                            if (extra-- > 0) sb.append(" ");
+                        }
+                    }
+                }
+                res.add(sb.toString());
+                i = j; len = 0; // reset
+            }
+            if (j < n) len += words[j].length();
+        }
+        return res;
+    }
+}
+```
+
+#### [336] Palindrome Pairs
+
+https://leetcode.com/problems/palindrome-pairs/
+
+```java
+class Solution {
+    public List<List<Integer>> palindromePairs(String[] words) {
+        Set<List<Integer>> res = new HashSet<>();
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < words.length; i++)
+            map.put(words[i], i);
+        for (int i = 0; i < words.length; i++) {
+            for (int j = 0; j <= words[i].length(); j++) {
+                String s1 = words[i].substring(0, j), s2 = words[i].substring(j);
+                if (check(s1)) {
+                    String rev = new StringBuilder(s2).reverse().toString();
+                    if (map.containsKey(rev) && map.get(rev) != i)
+                        res.add(Arrays.asList(map.get(rev), i));
+                }
+                if (check(s2)) {
+                    String rev = new StringBuilder(s1).reverse().toString();
+                    if (map.containsKey(rev) && map.get(rev) != i)
+                        res.add(Arrays.asList(i, map.get(rev)));
+                }
+            }
+        }
+        return new ArrayList<>(res);
+    }
+
+    private boolean check(String s) { // is palindormic
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i++) != s.charAt(j--)) return false;
+        }
+        return true;
+    }
+}
+```
+
+### [829] Consecutive Numbers Sum
+
+```
+we can prove that 1 <= k < sqrt(2N) + 1
+
+suppose the seq starts at x and has length k, then the sum is (2x + (k - 1)k) / 2 = N, so that (k - 1)^2 < (k - 1)k < 2N, thus k < sqrt(2N) + 1
+
+and also x := N / k - (k - 1) / 2 = (2N - k(k-1)) / 2k
+```
+
+```java
+class Solution {
+    public int consecutiveNumbersSum(int N) {
+        int cnt = 0;
+        for (int k = 1; k < Math.sqrt(2 * N) + 1; k++) {
+            if ((2 * N - k * (k - 1)) % (2 * k) == 0 && (2 * N - k * (k - 1)) / (2 * k) >= 1)
+                cnt++;
+        }
+        return cnt;
+    }
+}
+```
+
+### [547] Friend Circles
+
+> use dfs to mark all connected componet one by one, note that M[i][i] is set to 1 in the problem
+
+```java
+class Solution {
+    public int findCircleNum(int[][] M) {
+        int n = M.length, cnt = 0;
+        boolean[] visited = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                dfs(i, M, visited);
+                cnt++;
+            }
+
+        }
+        return cnt;
+
+    }
+
+    private void dfs(int i, int[][] adj, boolean[] visited) {
+        if (visited[i]) return;
+        visited[i] = true;
+        for (int j = 0; j < adj[i].length; j++)
+            if (adj[i][j] == 1 && !visited[j])
+                dfs(j, adj, visited);
+    }
+}
+```
+
+### [1048] Longest String Chain
+
+```java
+class Solution {
+    public int longestStrChain(String[] words) {
+        Map<String, Integer> dp = new HashMap<>();
+        Arrays.sort(words, (s1, s2) -> (s1.length() - s2.length()));
+        int max = 0;
+        for (String s : words) {
+            int cur = 1;
+            for (int i = 0; i < s.length(); i++) {
+                String prev = s.substring(0, i) + s.substring(i + 1);
+                cur = Math.max(cur, dp.getOrDefault(prev, 0) + 1);
+            }
+            dp.put(s, cur);
+            max = Math.max(max, cur);
+        }
+        return max;
+    }
+}
+```
+
+### [780] Reaching Points
+
+> go backward from the target
+
+```java
+class Solution {
+    public boolean reachingPoints(int sx, int sy, int tx, int ty) {
+        while (tx > sx && ty > sy) { // we can still go backward from t
+            if (tx > ty) tx %= ty;
+            else ty %= tx;
+        }
+        return (sx == tx && sy <= ty && (ty - sy) % sx == 0) ||
+            (sy == ty && sx <= tx && (tx - sx) % sy == 0);
+    }
+}
+```
+
+### [157] Read N Characters Given Read4
+
+> read n characters into the buf array and return the actual readed length, the goal is to read into the destination buffer
+
+```java
+/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char[] buf);
+ */
+public class Solution extends Reader4 {
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    public int read(char[] buf, int n) {
+        int cnt = 0;
+        boolean eof = false;
+        while (!eof && cnt < n) {
+            char[] tmp = new char[4];
+            int len = read4(tmp);
+            eof = len < 4;
+            for (int i = 0; i < len && cnt < n; i++)
+                buf[cnt++] = tmp[i];
+        }
+        return cnt;
+    }
+}
+```
+
+### [158]
+
+```java
+/**
+ * The read4 API is defined in the parent class Reader4.
+ *     int read4(char[] buf);
+ */
+public class Solution extends Reader4 {
+    /**
+     * @param buf Destination buffer
+     * @param n   Number of characters to read
+     * @return    The number of actual characters read
+     */
+    char[] buf4 = new char[4];
+    int i4 = 0, n4 = 0;
+    public int read(char[] buf, int n) {
+        int i = 0;
+        while (i < n) {
+            if (i4 >= n4) { // inner buffer is empty, read4 again
+                i4 = 0;
+                n4 = read4(buf4);
+                if (n4 == 0) break;
+            }
+            buf[i++] = buf4[i4++];
+        }
+        return i;
+    }
+}
+```
+
+### [218] The Skyline Problem
+
+> TreeMap to handle duplicate keys, use the value as count. TreeMap supports logn insertion and lookup
+
+> sort and sweep
+
+```java
+class Solution {
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        List<int[]> lines = new ArrayList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        for (int[] b : buildings) {
+            lines.add(new int[]{b[0], -b[2]}); // entering event, negative
+            lines.add(new int[]{b[1], b[2]}); // leaving
+        }
+        Collections.sort(lines, (l1, l2) -> (l1[0] == l2[0] ? l1[1] - l2[1] : l1[0] - l2[0])); // enter high to low, leave l to h
+        TreeMap<Integer, Integer> map = new TreeMap<>(); // treemap with count
+        map.put(0, 1);
+        int prev = 0;
+        for (int[] l : lines) {
+            if (l[1] < 0) {
+                map.put(-l[1], map.getOrDefault(-l[1], 0) + 1);
+            } else {
+                map.put(l[1], map.getOrDefault(l[1], 0) - 1);
+                if (map.get(l[1]) <= 0) map.remove(l[1]);
+            }
+            int cur = map.lastKey();
+            if (cur != prev) {
+                res.add(new ArrayList<>(Arrays.asList(l[0], cur)));
+                prev = cur;
+            }
+        }
+        return res;
+    }
+}
+```
+
+### [680] Vald Palindrome II
+
+```java
+class Solution {
+    public boolean validPalindrome(String s) {
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) return check(s, i + 1, j) || check(s, i, j - 1);
+            else {
+                i++; j--;
+            }
+        }
+        return true;
+    }
+
+    private boolean check(String s, int i, int j) {
+        while (i < j) {
+            if (s.charAt(i) != s.charAt(j)) return false;
+            i++; j--;
+        }
+        return true;
+    }
+}
+```
+
+### [443] String Compression
+
+```
+note that rev of 10 becomes 1 not 01 as expected
+```
+
+```java
+class Solution {
+    public int compress(char[] chars) {
+        if (chars.length == 0) return 0;
+        char cur = chars[0];
+        int cnt = 1, pos = 0;
+        for (int i = 1; i <= chars.length; i++) {
+            if (i == chars.length || chars[i] != cur) {
+                chars[pos++] = cur;
+                if (cnt > 1) {
+                    for (char ch : Integer.toString(cnt).toCharArray())
+                        chars[pos++] = ch;
+                }
+                if (i < chars.length) {
+                    cur = chars[i];
+                    cnt = 1;
+                }
+            } else cnt++;
+        }
+        return pos;
+    }
+}
+```
+
+### [93] Restore IP Addresses
+
+```java
+class Solution {
+    public List<String> restoreIpAddresses(String s) {
+        List<String> res = new ArrayList<>();
+        restore(s, 4, new StringBuilder(), res);
+        return res;
+    }
+
+    public void restore(String s, int k, StringBuilder sb, List<String> res) {
+        if (s.length() > 12) return;
+        if (k == 0 && s.length() == 0) res.add(sb.toString());
+        else {
+            for (int i = 1; i <= 3 && i <= s.length(); i++) {
+                if (isValid(s.substring(0, i))) {
+                    String ip = s.substring(0, i);
+                    sb.append(ip); if (k > 1) sb.append('.');
+                    restore(s.substring(i), k - 1, sb, res);
+                    if (k > 1) sb.deleteCharAt(sb.length() - 1);
+                    sb.delete(sb.length() - ip.length(), sb.length());
+                }
+            }
+        }
+    }
+
+    public boolean isValid(String s) {
+        int n = s.length();
+        if (n <= 0 || n > 3 || (n > 1 && s.charAt(0) == '0')) return false;
+        int ip = Integer.valueOf(s);
+        return ip >= 0 && ip <= 255;
+    }
+}
+```
+
+> I use StringBuilder here, but I think I can just use string since the ip string is short
+
+### [706] Design HashMap
+
+1. Are the kes integers only?
+2. Can we use chaining to solve collision
+3. Do I need to consider the load factor / resizing?
+
+> There are numbers of different solutions when I saw this problem. Note that the keys and vallues have been limited into [0, 1,000,000]
+
+#### solution 1, use an array of size 1e6
+
+> we directly put the value into the index which equals to the key
+
+```java
+class MyHashMap {
+    int[] arr;
+    /** Initialize your data structure here. */
+    public MyHashMap() {
+        arr = new int[1000000];
+        Arrays.fill(arr, -1);
+    }
+
+    /** value will always be non-negative. */
+    public void put(int key, int value) {
+        arr[key] = value;
+    }
+
+    /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+    public int get(int key) {
+        return arr[key];
+    }
+
+    /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+    public void remove(int key) {
+        arr[key] = -1;
+    }
+}
+```
+
+#### optimization 1: dynamic size
+
+> we don't have to allocate an array of size 1e6 initially. We can allocate an array of 1000 and then allocate a subarray of size 1000 when needed. For example, key := 100002 will be mapped into arr[10002 % 2][10002 / 1000] which is something like arr[last 3 digit][first 3 digit]
+
+```java
+class MyHashMap {
+    int[][] arr;
+    /** Initialize your data structure here. */
+    public MyHashMap() {
+        arr = new int[1000][]; // arr[0] == null
+    }
+
+    /** value will always be non-negative. */
+    public void put(int key, int value) {
+        int hash = key % 1000;
+        if (arr[hash] == null) {
+            arr[hash] = new int[1000];
+            Arrays.fill(arr[hash], -1);
+        }
+        arr[hash][key / 1000] = value;
+    }
+
+    /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+    public int get(int key) {
+        int hash = key % 1000;
+        if (arr[hash] == null) return -1;
+        return arr[hash][key / 1000];
+    }
+
+    /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+    public void remove(int key) {
+        int hash = key % 1000;
+        if (arr[hash] != null) {
+            arr[hash][key / 1000] = -1;
+        }
+    }
+}
+
+/**
+ * Your MyHashMap object will be instantiated and called as such:
+ * MyHashMap obj = new MyHashMap();
+ * obj.put(key,value);
+ * int param_2 = obj.get(key);
+ * obj.remove(key);
+ */
+```
+
+#### optimization 2: for the sub array, we can also use a linkedlist instead of an array of size 1000 to save some space, but we have to gp through the list for the (key, value) pair which takes more time than the second solution
+
+> use linkedlist or ~~any dynamic sized array (like arraylist or vector in c++)~~(we need to chain the key value pairs) to further optimize the space, but will take more time for the get operations, a space/time tradeoff
+
+> the best so far
+
+```java
+class MyHashMap {
+    Node[] arr;
+    /** Initialize your data structure here. */
+    public MyHashMap() {
+        arr = new Node[1000];
+    }
+
+    /** value will always be non-negative. */
+    public void put(int key, int value) {
+        int hash = key % 1000; // we can also use Integer.hashCode(key) % arr.length, etc
+        if (arr[hash] == null) arr[hash] = new Node();
+        Node node = arr[hash];
+        while (node.key != key && node.next != null) node = node.next;
+        if (node.key == key) node.val = value;
+        else node.next = new Node(key, value);
+
+    }
+
+    /** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+    public int get(int key) {
+        int hash = key % 1000;
+        if (arr[hash] == null) return -1;
+        Node node = arr[hash];
+        while (node.key != key && node.next != null) node = node.next;
+        return node.key == key ? node.val : -1;
+    }
+
+    /** Removes the mapping of the specified value key if this map contains a mapping for the key */
+    public void remove(int key) {
+        int hash = key % 1000;
+        if (arr[hash] == null) return;
+        Node node = arr[hash], pre = node;
+        while(node.key != key && node.next != null) {
+            pre = node;
+            node = node.next;
+        }
+        if (node.key == key) pre.next = node.next;
+    }
+
+    private class Node {
+        int key = -1;
+        int val = -1;
+        Node next = null;
+        public Node() {};
+        public Node(int key, int val) {
+            this.key = key; this.val = val;
+        }
+    }
+}
+
+/**
+ * Your MyHashMap object will be instantiated and called as such:
+ * MyHashMap obj = new MyHashMap();
+ * obj.put(key,value);
+ * int param_2 = obj.get(key);
+ * obj.remove(key);
+ */
+```
+
+### [415] Add Strings
+
+> sum of big integers
+
+```java
+class Solution {
+    public String addStrings(String num1, String num2) {
+        int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+        StringBuilder sb = new StringBuilder();
+        while (i >= 0 || j >= 0 || carry > 0) {
+            int sum = carry;
+            sum += (i >= 0 ? num1.charAt(i--) - '0' : 0);
+            sum += (j >= 0 ? num2.charAt(j--) - '0' : 0);
+            sb.append(sum % 10);
+            carry = sum / 10;
+        }
+        return sb.reverse().toString();
+    }
+}
+```
+
+> what if we want to compute the product?
+
+### [43] Multiply Strings
+
+> pos i \* pos j -> pos[i+j+1]pos[i+j], math
+
+```
+for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                int p1 = i + j, p2 = i + j + 1;
+                int sum = mul + pos[p2];
+                pos[p1] += sum / 10;
+                pos[p2] = sum % 10;
+            }
+        }
+```
+
+### [739] Daily Temperatures
+
+> Monotonous Stack
+
+
+```java
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        int[] res = new int[T.length];
+        Stack<Integer> stack = new Stack<>();        
+        for (int i = 0; i < T.length; i++) {
+            while (!stack.isEmpty() && T[i] > T[stack.peek()]) {
+                int j = stack.pop();
+                res[j] = i - j;
+            }
+            stack.push(i);
+        }
+        while(!stack.isEmpty()) res[stack.pop()] = 0;
+        return res;        
+    }
+}
+```
+
+> or you can use an array as a stack, which is faster
+
+```java
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+        int[] res = new int[T.length];
+        int[] stack = new int[T.length];
+        int top = -1;
+        for (int i = 0; i < T.length; i++) {
+            while (top > -1 && T[i] > T[stack[top]]) {
+                int j = stack[top--];
+                res[j] = i - j;
+            }
+            stack[++top] = i;
+        }
+        while (top > -1) res[stack[top--]] = 0;
+        return res;
     }
 }
 ```
