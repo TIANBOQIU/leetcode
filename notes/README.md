@@ -1079,12 +1079,11 @@ for (int i = m - 1; i >= 0; i--) {
 
 > Monotonous Stack
 
-
 ```java
 class Solution {
     public int[] dailyTemperatures(int[] T) {
         int[] res = new int[T.length];
-        Stack<Integer> stack = new Stack<>();        
+        Stack<Integer> stack = new Stack<>();
         for (int i = 0; i < T.length; i++) {
             while (!stack.isEmpty() && T[i] > T[stack.peek()]) {
                 int j = stack.pop();
@@ -1093,7 +1092,7 @@ class Solution {
             stack.push(i);
         }
         while(!stack.isEmpty()) res[stack.pop()] = 0;
-        return res;        
+        return res;
     }
 }
 ```
@@ -1114,6 +1113,94 @@ class Solution {
             stack[++top] = i;
         }
         while (top > -1) res[stack[top--]] = 0;
+        return res;
+    }
+}
+```
+
+### [143] Reorder List
+
+1. split the list into 2 lists in the middle
+2. reverse the second list
+3. merge 2 lists into one which is the final result
+
+```java
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null || head.next.next == null) return;
+        ListNode slow = head, fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next; fast = fast.next.next;
+        } // 1-2-3 slow->2 ; 1-2-3-4 slow->2 ;
+        ListNode l2 = slow.next;
+        slow.next = null;
+        ListNode pre = null;
+        while (l2 != null) {
+            ListNode next = l2.next;
+            l2.next = pre;
+            pre = l2;
+            l2 = next;
+        }
+        // merge head and rev l2
+        ListNode l1 = head;
+        l2 = pre;
+        while (l1 != null && l2 != null) {
+            ListNode next = l1.next;
+            l1.next = l2;
+            l2 = l2.next;
+            l1.next.next = next;
+            l1 = next;
+        }
+    }
+}
+```
+
+> alternatively, we can use a stack for the second half
+
+### [438] Find All Anagras in a String
+
+> sliding window, [i, j] of fixed length p.length(), when j >= p.length() -1 we start to move i
+
+```java
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        int[] arr = new int[26];
+        for (char ch : p.toCharArray()) arr[ch - 'a']++;
+        int i = 0, cnt = p.length();
+        for (int j = 0; j < s.length(); j++) {
+            if (--arr[s.charAt(j) - 'a'] >= 0) cnt--;
+            if (cnt == 0) res.add(i);
+            if (j >= p.length() - 1)
+                if (++arr[s.charAt(i++) - 'a'] > 0) cnt++;
+        }
+        return res;
+    }
+}
+```
+
+> we can combine the two if statements into one
+
+```java
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        int[] arr = new int[26];
+        for (char ch : p.toCharArray()) arr[ch - 'a']++;
+        int i = 0, cnt = p.length();
+        for (int j = 0; j < s.length(); j++) {
+            if (--arr[s.charAt(j) - 'a'] >= 0) cnt--;
+            if (cnt == 0) res.add(i);
+            if (j >= p.length() - 1 && ++arr[s.charAt(i++) - 'a'] > 0) cnt++;
+        }
         return res;
     }
 }
